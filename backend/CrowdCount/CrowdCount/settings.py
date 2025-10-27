@@ -107,6 +107,9 @@ DATABASES = {
     }
 }
 
+SESSION_COOKIE_AGE  = 600
+SESSION_EXPIRE_AT_BROSWER_CLOSE  = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -164,6 +167,9 @@ SIMPLE_JWT = {
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -1,19 +1,20 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.template import loader
 
-from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,login
+from django.contrib.auth.decorators import login_required
 from rest_framework.views import APIView
-
-
+from django.core.files.storage import default_storage
 from ultralytics import YOLO
-import cv2
+from django.http import FileResponse
+import cv2,os,tempfile,time
 import numpy as np
+from pathlib import Path
+from django.utils import timezone
 
 model = YOLO('yolov8n.pt')
 
@@ -32,21 +33,35 @@ def register_user(request):
     return Response({"message":"User Created Sucessfully",'username': user.username
     }, status=status.HTTP_201_CREATED)
     
+    
+    
 @api_view(['POST'])
 def login_user(request):
+    
     username = request.data.get('username')
     password = request.data.get('password')
     
     user = authenticate(username=username, password=password)
     
     if user is not None:
+        
+        login(request, user)
+        
+        request.session['login_time'] = timezone.now().isoformat()
+        
         return Response({
-        'message': 'User Logon Successful'
+            
+        'message': 'User Logon Successful',
+        
+        'username': username,
+        
     }, status=status.HTTP_201_CREATED)
         
     else:
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
+    
+
 class DetectPeopleView(APIView):
     def post(self,request):
         file = request.FILES.get('image')
@@ -80,10 +95,82 @@ class DetectPeopleView(APIView):
     
         return response1
     
+    
+    
+    
 @api_view(['GET'])  
 def home(request):
     return Response({"message":"Welcome to CrowdCount Project"})
 
+
+
+
 @api_view(['GET'])
 def user_details(request):
-    return Response({"message":"All User Details"})
+    users = User.objects.filter(is_active=True).values()
+    # user = users.username
+    # email = users.email
+    # status = users.is_active
+    return Response({"users":users},status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def profile(request):
+    
+    
+    return Response({"message":"Profile Details"},status=status.HTTP_200_OK)
+
+
+class VideoUploadView(APIView):
+    def post(self, request, *args, **kwargs):
+        video_file = request.FILES.get("video_file")
+        if not video_file:
+            return Response({"error": "No video uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save uploaded video temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_file:
+            for chunk in video_file.chunks():
+                temp_file.write(chunk)
+            input_path = temp_file.name
+
+        # Load YOLO model
+        model = YOLO("yolov8n.pt")
+
+        # Use stream=True for frame-by-frame
+        results = model.predict(source=input_path, stream=True, verbose=False)
+
+        total_people = 0
+        frame_num = 0
+        frame_limit = 5
+
+        # Loop through results and stop after frame_limit
+        for r in results:
+            frame_num += 1
+            if frame_num > frame_limit:
+                break
+
+            for box in r.boxes:
+                if int(box.cls[0]) == 0:
+                    total_people += 1
+
+    
+        time.sleep(1)
+
+        
+        try:
+            os.remove(input_path)
+        except PermissionError:
+            print(f" Skipping file delete; still in use: {input_path}")
+
+        # Return JSON response
+        return Response(
+            {
+                "total_people": total_people,
+                "frames_processed": frame_num,
+                "message": f"People counted from first {frame_limit} frames successfully"
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+
+
