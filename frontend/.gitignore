@@ -1,0 +1,15 @@
+ 
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Node.js / React
+node_modules/
+dist/
+build/
+
+# Logs and caches
+*.log
+.DS_Store
+.cache/
