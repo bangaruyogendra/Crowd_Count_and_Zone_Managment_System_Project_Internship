@@ -1,11 +1,16 @@
-import { useRef, useState } from "react";
+import { useRef, useState,useContext} from "react";
+import peopleCountContext from './peopleCountContext.jsx';
 import axios from 'axios';
+
+
+
+
 export default function DragDropFile() {
   const uploadRef = useRef(null);
   const [file, setFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [url, setUrl] = useState(null);
-  const [peopleCount, setPeopleCount] = useState(null);
+  const [count, setCount] = useState(null);
   
   const handleChange = (e) => {
     const selectedFile = uploadRef.current.files[0];
@@ -33,7 +38,11 @@ export default function DragDropFile() {
     }
     setIsDragOver(false);
   };
-
+  
+  const reset1 =()=>{
+    setCount(null);
+  }
+  
   const uploadFile = async(selectedFile)=>{
        const formData = new FormData()
        formData.append("image",selectedFile);
@@ -53,14 +62,16 @@ export default function DragDropFile() {
             const peopleCount = response.headers['peoplecount'];
 
             console.log("People Count:", peopleCount);
-            setPeopleCount(peopleCount)
+            setCount(peopleCount)
        }
        catch (error) {
           console.error("Upload failed:", error);
        }
   }
-
+  
+  
   return (
+    <peopleCountContext.Provider value ={{count,reset1}}>
     <div
       style={{
         background: "rgba(219,219,219,1)",
@@ -96,12 +107,14 @@ export default function DragDropFile() {
         />
         )}
 
-       {peopleCount !== null && (
+       {count !== null && (
             <p style={{ color: "black", marginTop: "10px" }}>
-                People detected:{peopleCount}
+                People detected:{count}
             </p>
        )}
        
     </div>
+    </peopleCountContext.Provider>
+  
   );
 }

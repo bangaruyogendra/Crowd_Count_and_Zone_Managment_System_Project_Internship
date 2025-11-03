@@ -1,81 +1,87 @@
-import React, { useContext } from 'react';
-import  videoContext  from './videoContext';
-import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, ResponsiveContainer,Label,Scatter,ScatterChart } from 'recharts';
+import React, { useContext, useEffect, useState } from 'react';
+import videoContext from './videoContext';
+
+import {
+  XAxis, YAxis, CartesianGrid, Tooltip, Label,
+  LineChart, Line, ResponsiveContainer, Bar, BarChart
+} from 'recharts';
+
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const { peopleCount, framesProcessed, reset } = useContext(videoContext);
+  const {
+    peopleCount,
+    framesProcessed,
+    cameraZonespeopleCount,
+  } = useContext(videoContext);
 
-  const data = [
-    { People: peopleCount, Frames: framesProcessed },
-    { People: peopleCount , Frames: framesProcessed + 50 },
-    { People: peopleCount , Frames: framesProcessed + 70 },
-    { People: peopleCount , Frames: framesProcessed + 90 },
-    { People: peopleCount , Frames: framesProcessed + 120 },
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    setData((prev) => [
+      ...prev.slice(-20),
+      {
+        Frames: framesProcessed,
+        People: peopleCount,
+        CameraZonePeople: cameraZonespeopleCount,
+      },
+    ]);
+  }, [peopleCount, framesProcessed, cameraZonespeopleCount]);
+
+  
+
+  const boxData = [
+    { name: 'Video Zone', value: peopleCount },
+    { name: 'Camera Zone', value: cameraZonespeopleCount },
   ];
+   
+  const threshold = 10;
+
+
+  useEffect(() => {
+    if (peopleCount > threshold || cameraZonespeopleCount > threshold) {
+      alert('High People Count Detected!');
+    }
+  }, [cameraZonespeopleCount]);
+
+
+  
 
   return (
-  <div className = "Dashboard-Main">
-    
-    <div className ="Dashboard-charts">
-     <div class="title-bar">
-        <h4>LinePlot Frames vs People</h4>
-    </div>
-      <LineChart
-         style={{ width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 }}
-         responsive
-         data={data}
-         margin={{ top: 15, right: 30, left: 20, bottom: 5 }}
-      >
-           <CartesianGrid strokeDasharray="4" stroke="black" />
-           <XAxis dataKey="Frames">
-            <Label value="Frames" offset={-5} position="insideBottom" />
-           </XAxis>
-           <YAxis width="auto" name ="No of People" label={{
-              value: 'People Count',
-              angle: -90,
-              position: 'insideLeft',
-              textAnchor: 'middle',
-           }}/>
-           <Tooltip/>
-           <Line type="monotone" dataKey="People" stroke="darkblue" />
-      </LineChart>
-    
-    </div>
+    <div className="Dashboard-Main">
+      <div className="Dashboard-title">Real Time Analytics</div>
 
-    <div className = "scatterPlot">
-      <div class="title-bar">
-        <h4>Scatter Plot</h4>
-      </div>
-             <ResponsiveContainer width="100%" height="100%">
-               <ScatterChart
-                 margin={{
-                   top: 10,
-                   right: 10,
-                   bottom: 10,
-                   left: 10,
-                }}
-               >
+      <div className="Dashboard-Row">
+        <div className="Dashboard-charts">
+          <div className="title-bar"><h4>Line Chart</h4></div>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={data}>
               <CartesianGrid strokeDasharray="4" stroke="black" />
-              <XAxis dataKey="Frames" type="number" name="Frames">
+              <XAxis dataKey="Frames">
                 <Label value="Frames" offset={-5} position="insideBottom" />
               </XAxis>
-              <YAxis dataKey="People" type="number" name="People" label={{
-              value: 'People Count',
-              angle: -90,
-              position: 'insideLeft',
-              textAnchor: 'middle',
-              }}/>
-              <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-             
-             <Scatter name="People per Frame" data={data} fill="lightgreen" />
-             </ScatterChart>
-            </ResponsiveContainer>
-            
+              <YAxis label={{ value: 'People Count', angle: -90, position: 'insideLeft' }} />
+              <Tooltip />
+              <Line type="linear" dataKey="People" stroke="darkblue" name="Video Zone" dot={false} />
+              <Line type="natural" dataKey="CameraZonePeople" stroke="darkgreen" name="Camera Zone" dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
+        <div className="boxPlot">
+          <div className="title-bar"><h4>Box Plot</h4></div>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={boxData} barCategoryGap="60%">
+              <CartesianGrid strokeDasharray="4" stroke="black" />
+              <XAxis dataKey="name" />
+              <YAxis label={{ value: 'People Count', angle: -90, position: 'insideLeft' }} />
+              <Tooltip />
+              <Bar dataKey="value" fill="#1e88e5" barSize={20} radius={[5, 5, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </div>
-
-  </div>
   );
 };
 

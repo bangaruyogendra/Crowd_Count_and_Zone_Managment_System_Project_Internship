@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import axios from 'axios';
 import './CameraZones.css';
 import DragDropFile from './DragDropFile';
@@ -8,9 +8,9 @@ import videoContext from './videoContext';
 const CameraZones = () => {
   const [mode, setMode] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [peopleCount, setPeopleCount] = useState(null);
-  const [framesProcessed, setFramesProcessed] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const { cameraZonespeopleCount, setCameraZonespeopleCount, cameraZonesframesProcessed, setCameraZonesframesProcessed } = useContext(videoContext);
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -33,8 +33,8 @@ const CameraZones = () => {
 
       //backend returns JSON like:
       // { total_people: 12, frames_processed: 240 }
-      setPeopleCount(response.data.total_people);
-      setFramesProcessed(response.data.frames_processed);
+      setCameraZonespeopleCount(response.data.total_people);
+      setCameraZonesframesProcessed(response.data.frames_processed);
     } catch (error) {
       console.error('Upload failed:', error);
       alert('Something went wrong while processing the video!');
@@ -45,18 +45,18 @@ const CameraZones = () => {
 
   const reset = () => {
     setSelectedFile(null);
-    setPeopleCount(null);
-    setFramesProcessed(null);
+    setCameraZonespeopleCount(null);
+    setCameraZonesframesProcessed(null);
     setMode(null);
   };
   const reset1 = () => {
-    setPeopleCount(0);
-    setFramesProcessed(0);
+    setCameraZonespeopleCount(0);
+    setCameraZonesframesProcessed(0);
   };
+  
 
   return (
-    <videoContext.Provider value={{ peopleCount, framesProcessed, reset1 }}>
-      <div className="main-container">
+        <div className="main-container">
 
         {/* Mode selection */}
         {!mode && (
@@ -77,7 +77,7 @@ const CameraZones = () => {
         {/* Upload mode */}
         {mode === 'upload' && (
           <div className="webcam-container">
-            {!peopleCount ? (
+            {!cameraZonespeopleCount ? (
               <>
                 <input type="file" accept="video/*" onChange={handleFileChange} />
                 <div className="btn">
@@ -105,7 +105,7 @@ const CameraZones = () => {
           </div>
         )}
       </div>
-    </videoContext.Provider>
+    
   );
 };
 
