@@ -7,6 +7,8 @@ export const VideoProvider = ({ children }) => {
   const [framesProcessed, setFramesProcessed] = useState(0);
   const [cameraZonespeopleCount, setCameraZonespeopleCount] = useState(0);
   const [cameraZonesframesProcessed, setCameraZonesframesProcessed] = useState(0);
+  const [dropZonespeopleCount, setDropZonespeopleCount] = useState(0);
+
 
   const reset = () => {
     setPeopleCount(0);
@@ -24,6 +26,8 @@ export const VideoProvider = ({ children }) => {
         setCameraZonespeopleCount,
         cameraZonesframesProcessed,
         setCameraZonesframesProcessed,
+        dropZonespeopleCount,
+        setDropZonespeopleCount,
         reset,
         
       }}

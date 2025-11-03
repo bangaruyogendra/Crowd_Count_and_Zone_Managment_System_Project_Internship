@@ -109,3 +109,11 @@
   color: #ff857a;
   font-size: 1.5rem;
 }
+.header {
+  position: relative;
+  z-index: 1;
+  top: 10rem;
+  text-align: center;
+  color: darkblue;
+  margin-bottom: 2rem;
+}

@@ -1,5 +1,5 @@
 import { useRef, useState,useContext} from "react";
-import peopleCountContext from './peopleCountContext.jsx';
+import videoContext from "./videoContext";
 import axios from 'axios';
 
 
@@ -10,7 +10,8 @@ export default function DragDropFile() {
   const [file, setFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [url, setUrl] = useState(null);
-  const [count, setCount] = useState(null);
+  
+  const { dropZonespeopleCount, setDropZonespeopleCount } = useContext(videoContext);
   
   const handleChange = (e) => {
     const selectedFile = uploadRef.current.files[0];
@@ -40,7 +41,7 @@ export default function DragDropFile() {
   };
   
   const reset1 =()=>{
-    setCount(null);
+    setDropZonespeopleCount(0);
   }
   
   const uploadFile = async(selectedFile)=>{
@@ -62,7 +63,7 @@ export default function DragDropFile() {
             const peopleCount = response.headers['peoplecount'];
 
             console.log("People Count:", peopleCount);
-            setCount(peopleCount)
+            setDropZonespeopleCount(peopleCount);
        }
        catch (error) {
           console.error("Upload failed:", error);
@@ -71,7 +72,7 @@ export default function DragDropFile() {
   
   
   return (
-    <peopleCountContext.Provider value ={{count,reset1}}>
+    
     <div
       style={{
         background: "rgba(219,219,219,1)",
@@ -107,14 +108,14 @@ export default function DragDropFile() {
         />
         )}
 
-       {count !== null && (
+       {dropZonespeopleCount !== null && (
             <p style={{ color: "black", marginTop: "10px" }}>
-                People detected:{count}
+                People detected:{dropZonespeopleCount} <button style={{marginLeft:"10px", padding:"5px 10px", backgroundColor:"darkblue", color:"white", border:"none", borderRadius:"5px", cursor:"pointer", ":hover":{backgroundColor:"blue"}}} onClick={reset1}>Reset count and upload again</button>
             </p>
        )}
        
     </div>
-    </peopleCountContext.Provider>
+    
   
   );
 }

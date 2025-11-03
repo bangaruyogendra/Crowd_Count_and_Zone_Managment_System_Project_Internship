@@ -1,36 +1,49 @@
-.Main {
+.main-container {
   text-align: center;
+  padding: 20px;
+}
+
+.start-screen {
+  margin-top: 100px;
+}
+
+.start-camera-btn {
+  background-color: #007bff;
   color: white;
-  background-color: #101010;
-  height: 30vh;
-  padding-top: 30px;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
 }
 
-.videoZones {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+.start-camera-btn:hover {
+  background-color: #0056b3;
 }
 
-.videoCam {
-  border: 3px solid #00ffcc;
-  border-radius: 10px;
-  overflow: hidden;
+.buttons {
+  margin-top: 20px;
+}
+
+.action-btn {
+  background-color: lightgray;
+  color: black;
+  border: none;
+  padding: 10px 18px;
+  margin: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.action-btn:hover {
+  background-color: blue;
+  color: white;
 }
 
 .results {
-  font-size: 22px;
-  color: #00ffcc;
-}
-
-.capture-button button {
-  margin: 10px;
-  padding: 10px 20px;
-  border: none;
-  background-color: #00ffcc;
-  color: black;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
+  margin-top: 10px;
+  font-size: 18px;
+  color: darkgreen;
 }

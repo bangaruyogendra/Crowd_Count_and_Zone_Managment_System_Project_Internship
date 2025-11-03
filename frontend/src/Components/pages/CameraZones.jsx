@@ -10,7 +10,7 @@ const CameraZones = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const { cameraZonespeopleCount, setCameraZonespeopleCount, cameraZonesframesProcessed, setCameraZonesframesProcessed } = useContext(videoContext);
+  const { cameraZonespeopleCount, setCameraZonespeopleCount, setCameraZonesframesProcessed } = useContext(videoContext);
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -49,13 +49,11 @@ const CameraZones = () => {
     setCameraZonesframesProcessed(null);
     setMode(null);
   };
-  const reset1 = () => {
-    setCameraZonespeopleCount(0);
-    setCameraZonesframesProcessed(0);
-  };
   
 
   return (
+    <div className="camera-zones">
+      <h1 className="header">Camera Zones People Detections</h1>
         <div className="main-container">
 
         {/* Mode selection */}
@@ -105,6 +103,7 @@ const CameraZones = () => {
           </div>
         )}
       </div>
+    </div>
     
   );
 };

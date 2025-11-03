@@ -9,10 +9,12 @@ import {
 import './Dashboard.css';
 
 const Dashboard = () => {
+  
   const {
     peopleCount,
     framesProcessed,
     cameraZonespeopleCount,
+    dropZonespeopleCount,
   } = useContext(videoContext);
 
   const [data, setData] = useState([]);
@@ -24,15 +26,17 @@ const Dashboard = () => {
         Frames: framesProcessed,
         People: peopleCount,
         CameraZonePeople: cameraZonespeopleCount,
+        DropZonePeople: dropZonespeopleCount,
       },
     ]);
-  }, [peopleCount, framesProcessed, cameraZonespeopleCount]);
+  }, [peopleCount, framesProcessed, cameraZonespeopleCount, dropZonespeopleCount]);
 
   
 
   const boxData = [
     { name: 'Video Zone', value: peopleCount },
     { name: 'Camera Zone', value: cameraZonespeopleCount },
+    { name: 'Drop Zone', value: dropZonespeopleCount },
   ];
    
   const threshold = 10;
@@ -64,6 +68,7 @@ const Dashboard = () => {
               <Tooltip />
               <Line type="linear" dataKey="People" stroke="darkblue" name="Video Zone" dot={false} />
               <Line type="natural" dataKey="CameraZonePeople" stroke="darkgreen" name="Camera Zone" dot={false} />
+              <Line type="monotone" dataKey="DropZonePeople" stroke="darkred" name="Drop Zone" dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>

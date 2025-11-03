@@ -5,11 +5,11 @@ import  Analytics  from "./Analytics";
 import  CameraZones  from "./CameraZones";
 import  Dashboard  from "./Dashboard";
 import  LogOut  from "./LogOut";
+import Documentation from "./Documentation";
 import { FaTachometerAlt, FaUsers, FaCamera} from "react-icons/fa";
 import { MdGroups } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import { FaVideo } from "react-icons/fa";
-import Profile from "./Profile";
 import VideoZones from "./VideoZones";
 import LoginRegister from "../LoginRegister/LoginRegister";
 
@@ -73,8 +73,8 @@ const UserManagement = () => {
         return <Dashboard />;
       case "Analytics":
         return <Analytics />;
-      case "Profile":
-        return <Profile/>;
+      case "Documentation":
+        return <Documentation />;
       case "CameraZones":
         return <CameraZones />;
       case "VideoZones":
@@ -141,8 +141,8 @@ const UserManagement = () => {
            <li onClick={() => setActiveItem("VideoZones")}>
             <span className="icon"><FaVideo /></span>Video Zones
           </li>
-          <li onClick={() => setActiveItem("Profile")}>
-            <span className="icon"><FaUserCircle /></span>Profile
+          <li onClick={() => setActiveItem("Documentation")}>
+            <span className="icon"><FaUserCircle /></span>Documentation
           </li>
           {/* <li onClick={() => setActiveItem("Analytics")}>
             <span className="icon"><FaChartBar /></span>Analytics
