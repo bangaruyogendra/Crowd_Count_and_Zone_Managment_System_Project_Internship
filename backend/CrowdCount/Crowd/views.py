@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,6 +13,10 @@ import cv2,os,tempfile,time
 import numpy as np
 from pathlib import Path
 from django.utils import timezone
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from PIL import Image
+import io
 
 model = YOLO('yolov8n.pt')
 
@@ -170,6 +172,30 @@ class VideoUploadView(APIView):
             },
             status=status.HTTP_200_OK
         )
+        
+        
+        
+@csrf_exempt
+def detect(request):
+    if request.method == "POST":
+        image_file = request.FILES.get("image")
+        if not image_file:
+            return JsonResponse({"error": "No image provided"}, status=400)
+
+        # Simulate AI detection (e.g. YOLOv8)
+        people_count = 3  # For demo, hardcoded
+
+        # Save image or modify it before sending back
+        img = Image.open(image_file)
+        buffer = io.BytesIO()
+        img.save(buffer, format="JPEG")
+        buffer.seek(0)
+
+        response = HttpResponse(buffer.getvalue(), content_type="image/jpeg")
+        response["peoplecount"] = people_count
+        return response
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
 
 
 

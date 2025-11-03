@@ -12,4 +12,5 @@ urlpatterns = [
     path('userDetails/',views.user_details,name = 'user_details'),
     path("api/upload/", VideoUploadView.as_view(), name="upload"),
     path("profile/",profile,name="profile"),
+     path('detectValues/', views.detect, name='detect'),
 ]

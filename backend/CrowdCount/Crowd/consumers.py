@@ -41,12 +41,13 @@ class VideoStream(AsyncWebsocketConsumer):
         # Run YOLO detection
         results = model(frame_3d, verbose=False)
         detections = []
+        CONF_THRESHOLD = 0.5
         
         # this results should be like this [ [100.0, 50.0,.......0,],[],[] ]
         for result in results[0].boxes.data.tolist():
             x1, y1, x2, y2, score, class_id = result
             label = model.names[int(class_id)]
-            if label == "person":
+            if label == "person" and score >= CONF_THRESHOLD:
                 detections.append({
                     "bbox": [x1, y1, x2, y2],
                     "confidence": float(score)
