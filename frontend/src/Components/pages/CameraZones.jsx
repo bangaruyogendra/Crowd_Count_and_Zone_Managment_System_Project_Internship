@@ -53,7 +53,6 @@ const CameraZones = () => {
 
   return (
     <div className="camera-zones">
-      <h1 className="header">Camera Zones People Detections</h1>
         <div className="main-container">
 
         {/* Mode selection */}

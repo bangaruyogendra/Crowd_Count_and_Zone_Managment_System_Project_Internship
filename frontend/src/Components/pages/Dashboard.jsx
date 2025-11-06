@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState,useRef,useMemo } from 'react';
 import videoContext from './videoContext';
 
 import {
@@ -18,6 +18,12 @@ const Dashboard = () => {
   } = useContext(videoContext);
 
   const [data, setData] = useState([]);
+  
+  const alertShown = useRef({
+    video: false,
+    camera: false,
+    drop: false
+  });
 
   useEffect(() => {
     setData((prev) => [
@@ -33,20 +39,40 @@ const Dashboard = () => {
 
   
 
-  const boxData = [
-    { name: 'Video Zone', value: peopleCount },
-    { name: 'Camera Zone', value: cameraZonespeopleCount },
-    { name: 'Drop Zone', value: dropZonespeopleCount },
-  ];
+  
    
-  const threshold = 10;
+const threshold = 10;
 
 
   useEffect(() => {
-    if (peopleCount > threshold || cameraZonespeopleCount > threshold) {
-      alert('High People Count Detected!');
+
+    if (peopleCount > threshold && !alertShown.current.video) {
+      alert('⚠️ High People Count Detected in Video Zone!');
+      alertShown.current.video = true;
+    } else if (peopleCount <= threshold && alertShown.current.video) {
+      alertShown.current.video = false;
     }
-  }, [cameraZonespeopleCount]);
+
+    if (cameraZonespeopleCount > threshold && !alertShown.current.camera) {
+      alert('⚠️ High People Count Detected in Camera Zone!');
+      alertShown.current.camera = true;
+    } else if (cameraZonespeopleCount <= threshold && alertShown.current.camera) {
+      alertShown.current.camera = false;
+    }
+
+    if (dropZonespeopleCount > threshold && !alertShown.current.drop) {
+      alert('⚠️ High People Count Detected in Drop Zone!');
+      alertShown.current.drop = true;
+    } else if (dropZonespeopleCount <= threshold && alertShown.current.drop) {
+      alertShown.current.drop = false;
+    }
+  }, [peopleCount, cameraZonespeopleCount, dropZonespeopleCount]);
+
+  const boxData = useMemo(() => [
+    { name: 'Video Zone', value: peopleCount },
+    { name: 'Camera Zone', value: cameraZonespeopleCount },
+    { name: 'Drop Zone', value: dropZonespeopleCount },
+  ], [peopleCount, cameraZonespeopleCount, dropZonespeopleCount]);
 
 
   
