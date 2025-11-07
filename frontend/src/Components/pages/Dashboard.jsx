@@ -18,12 +18,21 @@ const Dashboard = () => {
   } = useContext(videoContext);
 
   const [data, setData] = useState([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
   
   const alertShown = useRef({
     video: false,
     camera: false,
     drop: false
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
 
   useEffect(() => {
     setData((prev) => [
@@ -37,11 +46,24 @@ const Dashboard = () => {
     ]);
   }, [peopleCount, framesProcessed, cameraZonespeopleCount, dropZonespeopleCount]);
 
-  
+  const DownloadCsv = () => {
+    const csvData = [
+      ['Frames', 'People', 'CameraZonePeople', 'DropZonePeople', 'Timestamp'],
+      ...data.map(item => [item.Frames, item.People, item.CameraZonePeople, item.DropZonePeople, currentTime.toLocaleTimeString()]),
+    ];
+
+    const blob = new Blob([csvData.map(row => row.join(',')).join('\n')], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'report.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   
    
-const threshold = 10;
+  const threshold = 10;
 
 
   useEffect(() => {
@@ -79,8 +101,8 @@ const threshold = 10;
 
   return (
     <div className="Dashboard-Main">
-      <div className="Dashboard-title">Real Time Analytics</div>
-
+      <div className="Dashboard-title">Real Time Analytics<span><button onClick={DownloadCsv} className = "DownloadCSV">Download Report</button></span></div>
+      
       <div className="Dashboard-Row">
         <div className="Dashboard-charts">
           <div className="title-bar"><h4>Line Chart</h4></div>
