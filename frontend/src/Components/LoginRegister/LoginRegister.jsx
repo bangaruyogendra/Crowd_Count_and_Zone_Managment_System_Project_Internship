@@ -5,6 +5,9 @@ import './LoginRegister.css'
 import { IoIosMail } from "react-icons/io";
 import axios from "axios";
 import UserManagment from '../pages/User_Managment';
+import PasswordReset from "./PasswordReset";
+import { useNavigate } from "react-router-dom";
+
 
 const LoginRegister = () => {
 
@@ -17,6 +20,11 @@ const LoginRegister = () => {
     const loginLink = () =>{
         setAction('');
     }
+    const navigate = useNavigate();
+
+    const handlePasswordReset = () => {
+       navigate("/password-reset");
+    };
 
     const [formData, setFormData] = useState({
     username: "",
@@ -46,6 +54,7 @@ const LoginRegister = () => {
             alert(error.response.data.error || "Login faild")
         }
     }
+    
 
     const handleRegister = async (e) => {
     e.preventDefault();
@@ -102,11 +111,13 @@ const LoginRegister = () => {
                 </div>
                 <div className="remember-forget">
                     <label><input type = 'checkbox'/> Remember me</label>
-                    <a href ='#'>Forget password?</a>
+                     <a href="#" onClick={handlePasswordReset}>
+                        Forget password?
+                    </a>
                 </div>
                 <button type = 'submit'>Login</button>
                 <div className="register-link">
-                    <p>Don't have account? <a href ="#" onClick = {registerLink}>Register</a></p>
+                    <p>Don't have account? <a onClick = {registerLink}>Register</a></p>
                 </div>
             </form>
         </div>
