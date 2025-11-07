@@ -111,13 +111,19 @@ def home(request):
 
 
 
-@api_view(['GET'])
-def user_details(request):
-    users = User.objects.filter(is_active=True).values()
-    # user = users.username
-    # email = users.email
-    # status = users.is_active
-    return Response({"users":users},status=status.HTTP_200_OK)
+@api_view(['GET', 'DELETE'])
+def user_details(request, user_id=None):
+    if request.method == 'GET':
+        users = User.objects.filter(is_active=True).values()
+        return Response({"users": users}, status=status.HTTP_200_OK)
+
+    elif request.method == 'DELETE':
+        try:
+            user = User.objects.get(id=user_id)
+            user.delete()
+            return Response({"message": "User deleted successfully"}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def profile(request):
@@ -185,11 +191,9 @@ def detect(request):
         image_file = request.FILES.get("image")
         if not image_file:
             return JsonResponse({"error": "No image provided"}, status=400)
-
-        # Simulate AI detection (e.g. YOLOv8)
+        
         people_count = 3  # For demo, hardcoded
 
-        # Save image or modify it before sending back
         img = Image.open(image_file)
         buffer = io.BytesIO()
         img.save(buffer, format="JPEG")
@@ -217,7 +221,6 @@ class ForgotPasswordView(APIView):
         token = token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-        # 👇 this link matches your React route
         reset_link = f"http://localhost:3000/reset-password/{uid}/{token}/"
 
         send_mail(
