@@ -13,6 +13,10 @@ import cv2,os,tempfile,time
 import numpy as np
 from pathlib import Path
 from django.utils import timezone
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from PIL import Image
@@ -196,6 +200,57 @@ def detect(request):
         return response
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'No user found with this email'}, status=status.HTTP_404_NOT_FOUND)
+
+        token_generator = PasswordResetTokenGenerator()
+        token = token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+        # 👇 this link matches your React route
+        reset_link = f"http://localhost:3000/reset-password/{uid}/{token}/"
+
+        send_mail(
+            'Password Reset Request',
+            f'Click the link below to reset your password:\n{reset_link}',
+            None,
+            [email],
+            fail_silently=False,
+        )
+
+        return Response({'message': 'Password reset link sent to your email'}, status=status.HTTP_200_OK)
+
+
+
+class ResetPasswordView(APIView):
+    def post(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (User.DoesNotExist, ValueError, TypeError, OverflowError):
+            return Response({'error': 'Invalid link'}, status=status.HTTP_400_BAD_REQUEST)
+
+        token_generator = PasswordResetTokenGenerator()
+        if not token_generator.check_token(user, token):
+            return Response({'error': 'Invalid or expired token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        new_password = request.data.get('password')
+        if not new_password:
+            return Response({'error': 'Password required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({'message': 'Password reset successful'}, status=status.HTTP_200_OK)
 
 
 
