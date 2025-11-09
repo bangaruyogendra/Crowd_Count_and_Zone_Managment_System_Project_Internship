@@ -8,6 +8,7 @@ import UserManagment from './Components/pages/User_Managment';
 import Dashboard from './Components/pages/Dashboard';
 import VideoZones from './Components/pages/VideoZones';
 import CameraZones from './Components/pages/CameraZones';
+import Terms_and_Conditions from './Components/LoginRegister/Terms_and_Conditions';
 import { VideoProvider } from './Components/pages/videoContext';
 
 function App() {
@@ -29,13 +30,14 @@ function App() {
           {/* RESET PASSWORD CONFIRM (from email link) */}
           <Route path="/reset-password/:uidb64/:token" element={<PasswordResetConfirm />} />
 
-      
+          <Route path="/terms-and-conditions" element={<Terms_and_Conditions/>} />
           {isLoggedIn && (
             <>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/videozones" element={<VideoZones />} />
               <Route path="/camerazones" element={<CameraZones />} />
               <Route path="/usermanagement" element={<UserManagment />} />
+
             </>
           )}
 
