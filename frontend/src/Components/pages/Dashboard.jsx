@@ -3,7 +3,7 @@ import videoContext from './videoContext';
 
 import {
   XAxis, YAxis, CartesianGrid, Tooltip, Label,
-  LineChart, Line, ResponsiveContainer, Bar, BarChart
+  LineChart, Line, ResponsiveContainer, Bar, BarChart, Cell
 } from 'recharts';
 
 import './Dashboard.css';
@@ -48,7 +48,7 @@ const Dashboard = () => {
 
   const DownloadCsv = () => {
     const csvData = [
-      ['Frames', 'People', 'CameraZonePeople', 'DropZonePeople', 'Timestamp'],
+      ['Total Frames Processed', 'VideoZonePeople', 'CameraZonePeople', 'DropZonePeople', 'Timestamp'],
       ...data.map(item => [item.Frames, item.People, item.CameraZonePeople, item.DropZonePeople, currentTime.toLocaleTimeString()]),
     ];
 
@@ -129,7 +129,12 @@ const Dashboard = () => {
               <XAxis dataKey="name" />
               <YAxis label={{ value: 'People Count', angle: -90, position: 'insideLeft' }} />
               <Tooltip />
-              <Bar dataKey="value" fill="#1e88e5" barSize={20} radius={[5, 5, 0, 0]} />
+              <Bar dataKey="value" fill="#1e88e5" barSize={20} radius={[5, 5, 0, 0]}>
+                 {boxData.map((entry, index) => {
+                    const colors = ["#1e88e5", "#43a047", "#f4511e"];
+                    return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                  })}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

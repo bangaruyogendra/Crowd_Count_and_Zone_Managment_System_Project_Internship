@@ -32,6 +32,7 @@ const PasswordResetConfirm = () => {
             />
           </div>
           <button type="submit">Reset Password</button>
+          <button type="button" onClick={() => window.location.href = '/login'} className="back-button">Back to Login</button>
           <p>{message}</p>
         </form>
       </div>
