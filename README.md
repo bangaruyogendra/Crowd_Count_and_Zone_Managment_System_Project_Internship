@@ -34,6 +34,13 @@ I'm actively looking for **Data** and **Python Software** roles where I can cont
 
 Real-time system that detects, tracks, and analyzes human movement in live video. Custom danger zones, dwell-time tracking, a 3-level alert engine, and a full-stack web app — all built and deployed during internship.
 
+## 🏅 Certification
+
+![Infosys Springboard](https://img.shields.io/badge/Infosys_Springboard-Internship_Certificate-0066CC?style=for-the-badge&logo=infosys&logoColor=white)
+
+Completed internship at **Infosys Springboard** with certification in full-stack and computer vision development.  
+📄 [View Certificate](assets/certificate.pdf)
+
 🔗 [View Project →](https://github.com/bangaruyogendra/Crowd_Count_and_Zone_Managment_System_Project_Internship)
 
 ---
