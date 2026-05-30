@@ -39,7 +39,7 @@ Real-time system that detects, tracks, and analyzes human movement in live video
 ![Infosys Springboard](https://img.shields.io/badge/Infosys_Springboard-Internship_Certificate-0066CC?style=for-the-badge&logo=infosys&logoColor=white)
 
 Completed internship at **Infosys Springboard** with certification in full-stack and computer vision development.  
-📄 [View Certificate](assets/certificate.pdf)
+📄 [View Certificate](assets/Infosys_Certificate.pdf)
 
 🔗 [View Project →](https://github.com/bangaruyogendra/Crowd_Count_and_Zone_Managment_System_Project_Internship)
 
